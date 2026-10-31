@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Living Portraits</title>
+  <meta name="description" content="Mend an old family photo, return its colour, and give it depth for the ofrenda. Open-source AI on a server we control. The face is never changed.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="config.js?v=3"></script>
+</head>
+<body>
+  <canvas id="petals" aria-hidden="true"></canvas>
+
+  <header class="bar">
+    <a class="wordmark" href="#top">Living Portraits</a>
+    <nav>
+      <a href="#how">How it works</a>
+      <a class="btn small" href="#place">Place a photo</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Bring them back to the altar.</h1>
+        <p class="lede">Mend an old family photo, return its colour and give it depth. Their face is never changed.</p>
+        <a class="btn" href="#place"><i class="ph ph-image-square"></i>Place a photo</a>
+      </div>
+
+      <div class="altar" id="altar">
+        <div class="glow" aria-hidden="true"></div>
+        <figure class="frame">
+          <canvas id="portrait" aria-label="Restored portrait"></canvas>
+          <img id="fallback" alt="" hidden>
+          <span class="mark">AI-restored</span>
+        </figure>
+        <div class="candles" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="remembered">
+          <h2 id="r-name"></h2>
+          <p id="r-memory"></p>
+        </div>
+        <div class="tools">
+          <button class="btn ghost small" id="replay" type="button"><i class="ph ph-arrow-counter-clockwise"></i>Watch again</button>
+          <button class="btn ghost small" id="record" type="button"><i class="ph ph-video-camera"></i>Save video</button>
+          <a class="btn ghost small" id="download" download><i class="ph ph-download-simple"></i>Download photo</a>
+        </div>
+        <p class="hint">Move your cursor or tilt your phone over the photo.</p>
+      </div>
+    </section>
+
+    <section class="place" id="place">
+      <h2>Place a photo on the altar</h2>
+      <p class="sub" id="server-note">Black and white, faded or creased is fine. A phone photo of the print works.</p>
+
+      <form id="form" class="place-grid">
+        <label class="drop" id="drop">
+          <input type="file" id="photo" name="photo" accept="image/*" hidden>
+          <img id="preview" alt="" hidden>
+          <span class="drop-text" id="drop-text">
+            <i class="ph ph-upload-simple"></i>
+            <strong>Choose a photo</strong>
+            <span>or drop it here</span>
+          </span>
+        </label>
+
+        <div class="fields">
+          <label for="name">Their name</label>
+          <input id="name" type="text" name="name" maxlength="80" placeholder="Kamla Devi, my great-grandmother">
+
+          <label for="memory">A memory of them <span class="opt">optional</span></label>
+          <textarea id="memory" name="memory" maxlength="300" rows="3" placeholder="She hummed old songs while making rotis every morning."></textarea>
+
+          <label class="check"><input type="checkbox" name="share"> Show them in the public gallery below</label>
+          <p class="error" id="error" role="alert" hidden></p>
+          <button class="btn" type="submit" id="submit"><i class="ph ph-flame"></i>Bring them back</button>
+        </div>
+      </form>
+
+      <div class="working" id="working" hidden>
+        <div class="candle" aria-hidden="true"><span></span></div>
+        <ol class="steps">
+          <li data-step="queued">Waiting for the candle to catch</li>
+          <li data-step="mending">Mending creases and blur</li>
+          <li data-step="colouring">Returning the colour</li>
+          <li data-step="finding depth">Finding depth</li>
+          <li data-step="checking it is still them">Making sure it is still them</li>
+        </ol>
+        <p class="sub" id="working-note">Usually under a minute.</p>
+      </div>
+    </section>
+
+    <section class="gallery-section" id="gallery-section" hidden>
+      <h2>Remembered here</h2>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <section class="how" id="how">
+      <h2>What happens to the photo</h2>
+      <div class="how-grid">
+        <div><h3>Mend</h3><p>GFPGAN repairs blur and damage on the face, blended gently so they still look like themselves.</p></div>
+        <div><h3>Colour</h3><p>DDColor suggests colour for black-and-white prints. The light and detail stay from the original.</p></div>
+        <div><h3>Depth</h3><p>Depth Anything finds what is near and far, so candlelight and your cursor give the photo depth.</p></div>
+        <div><h3>Check</h3><p>A face-recognition model compares before and after, to make sure it is still the same person.</p></div>
+      </div>
+      <p class="promise">The face is never moved, re-posed or given words. Everything runs on open-source models on our own server, so family photos are never sent to an AI company.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built for Día de los Muertos with GFPGAN, DDColor, Depth Anything V2 and facexlib, running on DigitalOcean.</p>
+  </footer>
+
+  <script src="portrait.js?v=3"></script>
+  <script src="app.js?v=3"></script>
+</body>
+</html>

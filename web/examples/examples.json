@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Frederick Douglass, c. 1879",
+    "memory": "Escaped slavery and spent his life speaking and writing for freedom.",
+    "before": "frederick-douglass-circa-1879-before.jpg",
+    "final": "frederick-douglass-circa-1879-final.jpg",
+    "depth": "frederick-douglass-circa-1879-depth.png",
+    "face": {
+      "x": 0.4718,
+      "y": 0.3944
+    },
+    "identity": 0.957
+  },
+  {
+    "name": "Kasturba Gandhi",
+    "memory": "Led women satyagrahis and was jailed many times in the fight for independence.",
+    "before": "kasturba-gandhi-before.jpg",
+    "final": "kasturba-gandhi-final.jpg",
+    "depth": "kasturba-gandhi-depth.png",
+    "face": {
+      "x": 0.5386,
+      "y": 0.3718
+    },
+    "identity": 0.946
+  },
+  {
+    "name": "Marie Curie, c. 1920",
+    "memory": "The first person to win Nobel Prizes in two different sciences.",
+    "before": "marie-curie-c1920-before.jpg",
+    "final": "marie-curie-c1920-final.jpg",
+    "depth": "marie-curie-c1920-depth.png",
+    "face": {
+      "x": 0.4881,
+      "y": 0.4289
+    },
+    "identity": 0.958
+  },
+  {
+    "name": "Rabindranath Tagore, 1909",
+    "memory": "Wrote the songs that became the national anthems of India and Bangladesh.",
+    "before": "rabindranath-tagore-in-1909-before.jpg",
+    "final": "rabindranath-tagore-in-1909-final.jpg",
+    "depth": "rabindranath-tagore-in-1909-depth.png",
+    "face": {
+      "x": 0.3941,
+      "y": 0.359
+    },
+    "identity": 0.738
+  },
+  {
+    "name": "Srinivasa Ramanujan, 1913",
+    "memory": "Filled notebooks with formulas mathematicians are still working through.",
+    "before": "srinivasa-ramanujan-opc-1-before.jpg",
+    "final": "srinivasa-ramanujan-opc-1-final.jpg",
+    "depth": "srinivasa-ramanujan-opc-1-depth.png",
+    "face": {
+      "x": 0.5742,
+      "y": 0.2449
+    },
+    "identity": 0.939
+  }
+]
