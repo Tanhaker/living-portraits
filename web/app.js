@@ -55,7 +55,7 @@ $("record").addEventListener("click", async () => {
 
 async function loadExamples() {
   try {
-    const items = await fetch("examples/examples.json?v=3").then((r) => r.json());
+    const items = await fetch("examples/examples.json?v=4").then((r) => r.json());
     return items.map((e) => ({ ...e, before: `examples/${e.before}`, final: `examples/${e.final}`, depth: `examples/${e.depth}` }));
   } catch { return []; }
 }
@@ -233,7 +233,7 @@ function petals() {
 
   const all = shared.concat(examples);
   renderGallery(all);
-  const first = all.find((e) => /Kasturba/.test(e.name)) || all[0];
+  const first = examples[0] || all[0];
   if (location.hash.length > 1) follow(location.hash.slice(1));
   else if (first) showOnAltar(first);
 })();

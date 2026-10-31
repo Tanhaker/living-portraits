@@ -27,11 +27,18 @@ TEXTURE_MAX = 1400  # longest side of the images the page loads
 
 
 def is_black_and_white(img_bgr: np.ndarray) -> bool:
-    """Old prints are often sepia or yellowed, so 'no saturation' is too strict.
-    Treat the photo as monochrome when its hues barely vary."""
-    lab = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2LAB).astype(np.float32)
-    a, b = lab[..., 1] - 128, lab[..., 2] - 128
-    return float(np.std(a) + np.std(b)) < 6.0
+    """Old prints are often sepia, albumen-brown or yellowed, so 'no saturation' is too strict.
+    In a toned monochrome print the colour is a function of brightness alone (dark ink, pale
+    paper), so fit colour against brightness and look at what is left over."""
+    small = cv2.resize(img_bgr, (256, 256), interpolation=cv2.INTER_AREA)
+    lab = cv2.cvtColor(small, cv2.COLOR_BGR2LAB).reshape(-1, 3).astype(np.float32)
+    L, a, b = lab[:, 0] / 255, lab[:, 1], lab[:, 2]
+    X = np.stack([np.ones_like(L), L, L * L, L ** 3], 1)
+    residual = 0.0
+    for c in (a, b):
+        coef, *_ = np.linalg.lstsq(X, c, rcond=None)
+        residual += float(np.std(c - X @ coef))
+    return residual < 4.0
 
 
 def fit(img: np.ndarray, longest: int) -> np.ndarray:

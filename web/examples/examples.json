@@ -1,15 +1,63 @@
 [
   {
-    "name": "Frederick Douglass, c. 1879",
-    "memory": "Escaped slavery and spent his life speaking and writing for freedom.",
-    "before": "frederick-douglass-circa-1879-before.jpg",
-    "final": "frederick-douglass-circa-1879-final.jpg",
-    "depth": "frederick-douglass-circa-1879-depth.png",
+    "name": "A woman in India, c. 1910",
+    "memory": "Photographed for a lantern slide. Her name was not recorded.",
+    "before": "unnamed-6-before.jpg",
+    "final": "unnamed-6-final.jpg",
+    "depth": "unnamed-6-depth.png",
     "face": {
-      "x": 0.4718,
-      "y": 0.3944
+      "x": 0.4797,
+      "y": 0.4474
     },
-    "identity": 0.957
+    "identity": 0.881
+  },
+  {
+    "name": "A woman in a sari and ornaments, 1880s",
+    "memory": "A studio portrait. Her name was not recorded.",
+    "before": "unnamed-3-before.jpg",
+    "final": "unnamed-3-final.jpg",
+    "depth": "unnamed-3-depth.png",
+    "face": {
+      "x": 0.4736,
+      "y": 0.2382
+    },
+    "identity": 0.949
+  },
+  {
+    "name": "A milk-seller, India, c. 1900",
+    "memory": "A studio photograph of a woman who sold milk. Her name was not recorded.",
+    "before": "unnamed-1-before.jpg",
+    "final": "unnamed-1-final.jpg",
+    "depth": "unnamed-1-depth.png",
+    "face": {
+      "x": 0.5407,
+      "y": 0.2291
+    },
+    "identity": 0.933
+  },
+  {
+    "name": "A woman with jewellery and a jug, 1870s",
+    "memory": "A studio portrait now in the Rijksmuseum. Her name was not recorded.",
+    "before": "unnamed-4-before.jpg",
+    "final": "unnamed-4-final.jpg",
+    "depth": "unnamed-4-depth.png",
+    "face": {
+      "x": 0.4086,
+      "y": 0.3516
+    },
+    "identity": 0.939
+  },
+  {
+    "name": "Two women, late 1800s",
+    "memory": "A studio portrait. Their names were not recorded.",
+    "before": "unnamed-5-before.jpg",
+    "final": "unnamed-5-final.jpg",
+    "depth": "unnamed-5-depth.png",
+    "face": {
+      "x": 0.6576,
+      "y": 0.1974
+    },
+    "identity": 0.943
   },
   {
     "name": "Kasturba Gandhi",
@@ -24,16 +72,16 @@
     "identity": 0.946
   },
   {
-    "name": "Marie Curie, c. 1920",
-    "memory": "The first person to win Nobel Prizes in two different sciences.",
-    "before": "marie-curie-c1920-before.jpg",
-    "final": "marie-curie-c1920-final.jpg",
-    "depth": "marie-curie-c1920-depth.png",
+    "name": "Srinivasa Ramanujan, 1913",
+    "memory": "Filled notebooks with formulas mathematicians are still working through.",
+    "before": "srinivasa-ramanujan-opc-1-before.jpg",
+    "final": "srinivasa-ramanujan-opc-1-final.jpg",
+    "depth": "srinivasa-ramanujan-opc-1-depth.png",
     "face": {
-      "x": 0.4881,
-      "y": 0.4289
+      "x": 0.5742,
+      "y": 0.2449
     },
-    "identity": 0.958
+    "identity": 0.939
   },
   {
     "name": "Rabindranath Tagore, 1909",
@@ -48,15 +96,27 @@
     "identity": 0.738
   },
   {
-    "name": "Srinivasa Ramanujan, 1913",
-    "memory": "Filled notebooks with formulas mathematicians are still working through.",
-    "before": "srinivasa-ramanujan-opc-1-before.jpg",
-    "final": "srinivasa-ramanujan-opc-1-final.jpg",
-    "depth": "srinivasa-ramanujan-opc-1-depth.png",
+    "name": "Marie Curie, c. 1920",
+    "memory": "The first person to win Nobel Prizes in two different sciences.",
+    "before": "marie-curie-c1920-before.jpg",
+    "final": "marie-curie-c1920-final.jpg",
+    "depth": "marie-curie-c1920-depth.png",
     "face": {
-      "x": 0.5742,
-      "y": 0.2449
+      "x": 0.4881,
+      "y": 0.4289
     },
-    "identity": 0.939
+    "identity": 0.958
+  },
+  {
+    "name": "Frederick Douglass, c. 1879",
+    "memory": "Escaped slavery and spent his life speaking and writing for freedom.",
+    "before": "frederick-douglass-circa-1879-before.jpg",
+    "final": "frederick-douglass-circa-1879-final.jpg",
+    "depth": "frederick-douglass-circa-1879-depth.png",
+    "face": {
+      "x": 0.4718,
+      "y": 0.3944
+    },
+    "identity": 0.957
   }
 ]

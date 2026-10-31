@@ -8,7 +8,7 @@ light, colour and depth instead.
 
 Built for the DEV Hacktoberfest Open-Source AI Challenge, Week 4: *Ghost in the Machine*.
 
-![The Return](docs/media/kasturba-return-small.gif)
+![The Return](docs/media/unnamed-1910-return.gif)
 
 ## The Return
 
@@ -36,15 +36,15 @@ themselves, and the ArcFace check measures it.
 
 ## Results
 
-Five public-domain portraits from Wikimedia Commons (`samples/`):
+Eleven public-domain portraits from Wikimedia Commons (`samples/` and `samples/unnamed/`):
 
 | | Laptop (RTX 3050, 4 GB) | DigitalOcean CPU Droplet (4 vCPU, 8 GB) |
 |---|---|---|
-| Time per photo (median) | 6.2 s | 11.7 s |
-| Identity, ArcFace cosine (median) | 0.95 | 0.95 |
+| Time per photo (median) | 5-6 s | 11.7 s |
+| Identity, ArcFace cosine (median) | 0.94 | 0.95 (one photo) |
 
-The lowest identity score (0.74) is Rabindranath Tagore's side profile: face models find profiles
-harder. On the Droplet ($0.125 an hour), one photo costs about $0.0004 of compute.
+10 of 11 portraits scored 0.88 or higher. The lowest (0.74) is Rabindranath Tagore's side profile:
+face models find profiles harder. On the Droplet ($0.125 an hour), one photo costs about $0.0004 of compute.
 
 ## Run it
 
@@ -73,5 +73,19 @@ python server/render_return.py results/Kasturba_Gandhi --face 0.54,0.37 --out do
 
 ## Licences and credits
 
-Code in this repo: MIT. Model licences belong to their authors (table above). Sample photos are
-public domain, from Wikimedia Commons. Family photos used in the write-up are shared with permission.
+Code in this repo: MIT. Model licences belong to their authors (table above).
+
+All sample photos come from Wikimedia Commons and are public domain or CC0. The portraits in
+`samples/unnamed/` are of people whose names were not recorded:
+
+| File | Source | Licence |
+|---|---|---|
+| unnamed_1.jpg | [A milk-woman in India (late 19th or early 20th century)](https://commons.wikimedia.org/wiki/File%3AA_milk-woman_in_India_%28late_19th_or_early_20th_century%29.jpg) | Public domain |
+| unnamed_2.jpg | [Portrait of an unidentified Indian woman in the 1860s](https://commons.wikimedia.org/wiki/File%3APortrait_of_an_unidentified_Indian_woman_in_the_1860s.jpg) | Public domain |
+| unnamed_3.jpg | [Studio portrait of an Indian woman in sari and various ornaments in the 1880s](https://commons.wikimedia.org/wiki/File%3AStudio_portrait_of_an_Indian_woman_in_sari_and_various_ornaments_in_the_1880s.jpg) | Public domain |
+| unnamed_4.jpg | [Studioportret van een Indiase vrouw met sieraden en een kan, RP-F-F80348](https://commons.wikimedia.org/wiki/File%3AStudioportret_van_een_Indiase_vrouw_met_sieraden_en_een_kan%2C_RP-F-F80348.jpg) (Rijksmuseum) | CC0 |
+| unnamed_5.jpg | [Studioportret van twee Indiase vrouwen, RP-F-F80378-A](https://commons.wikimedia.org/wiki/File%3AStudioportret_van_twee_Indiase_vrouwen_in_traditionele_kleding_uit_een_berggebied_Aboriginal_Tribes_Zeilgherry_Hills_%28titel_op_object%29%2C_RP-F-F80378-A.jpg) (Rijksmuseum) | CC0 |
+| unnamed_6.jpg | [Indian Christian, India, ca. 1910 (IMP-CSCNWW33-OS14-35)](https://commons.wikimedia.org/wiki/File%3AIndian_Christian%2C_India%2C_ca._1910_%28IMP-CSCNWW33-OS14-35%29.jpg) | Public domain |
+
+The other samples (Kasturba Gandhi, Srinivasa Ramanujan, Rabindranath Tagore, Marie Curie,
+Frederick Douglass) are public-domain portraits from Wikimedia Commons.
