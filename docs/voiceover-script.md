@@ -1,31 +1,35 @@
-# Demo voice-over (about 60 seconds)
+# Demo voice-over
 
-Generated with ElevenLabs (Eleven Multilingual v2). Scene timings are for the screen recording.
+Generated with ElevenLabs (voice: Kanika, Calm Devotional Audiobook; Eleven Multilingual v2; speed 0.93,
+stability 53%). Each paragraph is one scene of the demo video.
 
-| Time | On screen | Narration |
+| Scene | On screen | Narration |
 |---|---|---|
-| 0-9 s | Altar, the c. 1910 portrait, the Return plays | In Día de los Muertos, they say we die three times. The last time is when no one remembers us anymore. |
-| 9-17 s | Close on the portrait as colour blooms | I don't have a single photograph of my great-grandparents. But public archives are full of people whose names were never written down. |
-| 17-25 s | Cursor moves over the portrait, depth shifts | Living Portraits mends their photograph, returns its colour, and gives it depth. Using only open-source models. |
-| 25-34 s | Gallery: the milk-seller, then the woman in ornaments | A milk-seller, around nineteen hundred. A woman in her finest ornaments, in the eighteen-eighties. Their names were not recorded. |
-| 34-45 s | A photo is placed on the altar, progress steps, result | You can place your own family's photos on the altar too. It runs on a small DigitalOcean server, and your photos never go to an AI company. |
-| 45-53 s | "What happens to the photo" and the promise | And one promise. Their face is never moved. Never re-posed. Never given words. |
-| 53-60 s | Back to the altar and the candles | Light a candle. Bring them back to the altar. |
+| 1. Altar | The c. 1910 portrait returns | In Día de los Muertos, they say we die three times. The last time is when no one remembers us. |
+| 2. Remembered | Gallery of unnamed portraits | Most people in old photographs were never named. And I don't have a single photograph of my great-grandparents. |
+| 3. Place a photo | A photo is chosen, a name typed | So I built them an altar. You place an old photograph on it, and give it a name if you know one. |
+| 4. Working | Live progress on the DigitalOcean server | On a small DigitalOcean server, open-source models mend the face, return the colour, and work out the depth. |
+| 5. The Return | Her photo is mended, coloured, given depth | Then she returns. Mended. In colour. With depth that follows your hand. Her face is never moved, never re-posed, and never given words. |
+| 6. Honesty | Source, licence and face-match line | Every portrait shows where it came from, and how closely the face still matches. The colour is only a guess, and it says so. |
+| 7. Candle | A candle is lit | And anyone can light a candle for her, so that somebody remembers. |
+| 8. End card | Title and link | Living Portraits. Bring them back to the altar. |
 
 ## Text sent to ElevenLabs
 
 ```
-In Día de los Muertos, they say we die three times. <break time="0.6s" /> The last time is when no one remembers us anymore.
+In Día de los Muertos, they say we die three times. <break time="0.5s" /> The last time is when no one remembers us.
 <break time="1.2s" />
-I don't have a single photograph of my great-grandparents. <break time="0.4s" /> But public archives are full of people whose names were never written down.
-<break time="1.0s" />
-Living Portraits mends their photograph, returns its colour, and gives it depth. <break time="0.3s" /> Using only open-source models.
-<break time="1.0s" />
-A milk-seller, around nineteen hundred. <break time="0.5s" /> A woman in her finest ornaments, in the eighteen-eighties. <break time="0.5s" /> Their names were not recorded.
+Most people in old photographs were never named. And I don't have a single photograph of my great-grandparents.
 <break time="1.2s" />
-You can place your own family's photos on the altar too. It runs on a small DigitalOcean server, and your photos never go to an AI company.
-<break time="1.0s" />
-And one promise. <break time="0.4s" /> Their face is never moved. Never re-posed. Never given words.
+So I built them an altar. <break time="0.4s" /> You place an old photograph on it, and give it a name if you know one.
 <break time="1.2s" />
-Light a candle. <break time="0.6s" /> Bring them back to the altar.
+On a small DigitalOcean server, open-source models mend the face, return the colour, and work out the depth.
+<break time="1.2s" />
+Then she returns. <break time="0.5s" /> Mended. In colour. With depth that follows your hand. <break time="0.5s" /> Her face is never moved, never re-posed, and never given words.
+<break time="1.2s" />
+Every portrait shows where it came from, and how closely the face still matches. The colour is only a guess, and it says so.
+<break time="1.2s" />
+And anyone can light a candle for her, so that somebody remembers.
+<break time="1.2s" />
+Living Portraits. <break time="0.5s" /> Bring them back to the altar.
 ```

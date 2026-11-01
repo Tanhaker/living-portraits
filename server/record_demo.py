@@ -1,17 +1,17 @@
-"""Record a timed demo of the live site as an MP4 (1920x1080), optionally with a voice-over.
+"""Record one raw demo take of the live site, logging when each scene starts and where the
+important elements are on screen. server/edit_demo.py then cuts, zooms and narrates it.
 
-    python server/record_demo.py --url http://139.59.7.49 --out docs/media/demo --voice voiceover.mp3
+    python server/record_demo.py --url http://139.59.7.49 --out .local/take
 
-Frames come from Chrome's screencast (CDP), so the video is sharp and the WebGL portrait
-plays at full quality. Scene times line up with docs/voiceover-script.md.
+Frames come from Chrome's screencast (CDP), so the WebGL portrait plays at full quality.
 """
 
 from __future__ import annotations
 
 import argparse
 import base64
+import json
 import math
-import shutil
 import subprocess
 import tempfile
 import time
@@ -22,105 +22,49 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parent.parent
 _BIN = ROOT / ".local" / "bin" / "ffmpeg.exe"
 FFMPEG = str(_BIN) if _BIN.exists() else "ffmpeg"
-UPLOAD = ROOT / "samples" / "Kasturba_Gandhi.jpg"  # restores fast enough on CPU to finish on camera
+UPLOAD = ROOT / "samples" / "unnamed" / "unnamed_3.jpg"
+VIEW_W, VIEW_H = 1366, 768
+SCALE = 1920 / VIEW_W
+
+# Make the recording read well at 1080p: whole altar on screen, no scrollbar.
+RECORDING_CSS = (
+    "html { scroll-behavior: smooth; } ::-webkit-scrollbar { display: none; }"
+    ".hero { min-height: 0; padding: 18px 0 40px; } .frame { width: min(300px, 100%); }"
+    ".remembered { min-height: 0; margin-bottom: 10px; } .candles { margin-top: 24px; } .light { margin: 0 0 8px; }"
+)
 
 
 def glide(page, x0, y0, x1, y1, seconds, steps=60):
     """Move the pointer smoothly (ease in-out) so the portrait's depth follows it."""
     for i in range(steps + 1):
-        t = i / steps
-        e = 0.5 - math.cos(math.pi * t) / 2
+        e = 0.5 - math.cos(math.pi * i / steps) / 2
         page.mouse.move(x0 + (x1 - x0) * e, y0 + (y1 - y0) * e)
         time.sleep(seconds / steps)
 
 
-def portrait_centre(page):
-    box = page.locator("#portrait").bounding_box()
-    return box["x"] + box["width"] / 2, box["y"] + box["height"] / 2, box["width"], box["height"]
-
-
-def click_gallery(page, index):
-    page.locator("#gallery button").nth(index).scroll_into_view_if_needed()
-    time.sleep(0.6)
-    page.locator("#gallery button").nth(index).click()
-
-
-def scenes(page):
-    """(start second, action) pairs, matching the narration."""
-    def replay():
-        # Clicking with the mouse would scroll the button into view and crop the portrait.
-        page.evaluate("window.scrollTo({top: 0, behavior: 'smooth'}); document.querySelector('#replay').click()")
-
-    def drift_a():
-        x, y, w, h = portrait_centre(page)
-        glide(page, x - w * 0.3, y - h * 0.2, x + w * 0.35, y + h * 0.1, 4.5)
-
-    def drift_b():
-        x, y, w, h = portrait_centre(page)
-        glide(page, x + w * 0.35, y + h * 0.1, x - w * 0.35, y + h * 0.25, 3.5)
-
-    def drift_c():
-        x, y, w, h = portrait_centre(page)
-        glide(page, x - w * 0.35, y - h * 0.25, x + w * 0.3, y - h * 0.1, 3.0)
-
-    def milk_seller(): click_gallery(page, 2)
-    def ornaments(): click_gallery(page, 1)
-
-    def place_photo():
-        page.locator("#place").scroll_into_view_if_needed()
-        time.sleep(0.8)
-        page.set_input_files("#photo", str(UPLOAD))
-        time.sleep(0.6)
-        page.fill("#name", "")
-        page.type("#name", "Kasturba Gandhi", delay=40)
-
-    def submit(): page.click("#submit")
-
-    def drift_d():
-        x, y, w, h = portrait_centre(page)
-        glide(page, x - w * 0.3, y, x + w * 0.3, y - h * 0.15, 3.0)
-
-    def light(): page.evaluate("document.querySelector('#light').click()")
-
-    return [
-        (0.0, replay),
-        (8.0, drift_a),
-        (17.0, replay),
-        (21.0, drift_b),
-        (24.0, milk_seller),
-        (28.3, ornaments),
-        (33.0, place_photo),
-        (35.5, submit),
-        (51.5, drift_d),
-        (56.0, light),
-    ]
+def box(page, selector):
+    b = page.evaluate("(s) => { const r = document.querySelector(s).getBoundingClientRect();"
+                      " return [r.x, r.y, r.width, r.height]; }", selector)
+    return [round(v * SCALE) for v in b]
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default="http://139.59.7.49")
-    ap.add_argument("--out", type=Path, default=ROOT / "docs" / "media" / "demo")
-    ap.add_argument("--seconds", type=float, default=63.0)
-    ap.add_argument("--voice", type=Path)
-    ap.add_argument("--headed", action="store_true")
+    ap.add_argument("--out", type=Path, default=ROOT / ".local" / "take")
     args = ap.parse_args()
 
     tmp = Path(tempfile.mkdtemp())
     frames: list[tuple[float, Path]] = []
+    events: list[dict] = []
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=not args.headed,
-                                    args=["--use-angle=d3d11", "--enable-gpu", "--ignore-gpu-blocklist",
-                                          "--autoplay-policy=no-user-gesture-required"])
-        ctx = browser.new_context(viewport={"width": 1366, "height": 768}, device_scale_factor=1920 / 1366)
+        browser = p.chromium.launch(headless=True, args=["--use-angle=d3d11", "--enable-gpu", "--ignore-gpu-blocklist"])
+        ctx = browser.new_context(viewport={"width": VIEW_W, "height": VIEW_H}, device_scale_factor=SCALE)
         page = ctx.new_page()
-        page.goto(f"{args.url}/?rec=1", wait_until="networkidle")
+        page.goto(f"{args.url}/?rec=2", wait_until="networkidle")
         page.wait_for_function("document.querySelector('#r-name').textContent.length > 0", timeout=60000)
-        page.add_style_tag(content=(
-            "html { scroll-behavior: smooth; } ::-webkit-scrollbar { display: none; }"
-            # fit the whole altar inside a 16:9 frame
-            ".hero { min-height: 0; padding: 18px 0 40px; } .frame { width: min(300px, 100%); }"
-            ".remembered { min-height: 0; margin-bottom: 10px; } .hint { display: none; } .candles { margin-top: 24px; } .light { margin: 0 0 8px; }"))
+        page.add_style_tag(content=RECORDING_CSS)
         time.sleep(2.5)
 
         cdp = ctx.new_cdp_session(page)
@@ -133,41 +77,89 @@ def main() -> None:
 
         cdp.on("Page.screencastFrame", on_frame)
         cdp.send("Page.startScreencast", {"format": "jpeg", "quality": 92, "maxWidth": 1920, "maxHeight": 1080})
+        while not frames:
+            page.wait_for_timeout(20)
+        t0 = frames[0][0]
+        now = lambda: time.time() - t0  # screencast timestamps are wall-clock seconds
 
-        start = time.monotonic()
-        for at, action in scenes(page):
-            while time.monotonic() - start < at:
-                page.wait_for_timeout(20)
-            action()
-        while time.monotonic() - start < args.seconds:
-            page.wait_for_timeout(50)
+        def mark(name, selector=None, **extra):
+            events.append({"name": name, "t": round(now(), 2), **({"box": box(page, selector)} if selector else {}), **extra})
+
+        # 1. The altar: the c. 1910 portrait returns.
+        page.evaluate("window.scrollTo(0, 0); document.querySelector('#replay').click()")
+        mark("altar", ".altar")
+        page.wait_for_timeout(5500)
+        x, y = box(page, "#portrait")[:2]
+        b = box(page, "#portrait")
+        cx, cy = (b[0] + b[2] / 2) / SCALE, (b[1] + b[3] / 2) / SCALE
+        glide(page, cx - 80, cy - 60, cx + 90, cy + 40, 3.0)
+
+        # 2. Remembered: the gallery of unnamed portraits.
+        page.evaluate("document.querySelector('#remembered').scrollIntoView({behavior: 'smooth', block: 'center'})")
+        page.wait_for_timeout(900)
+        mark("gallery", "#remembered")
+        g = box(page, "#gallery")
+        gy = (g[1] + g[3] * 0.4) / SCALE
+        glide(page, 120, gy, 1100, gy, 5.0, steps=80)
+
+        # 3. Place a photo: choose it, give it a name.
+        page.evaluate("document.querySelector('#place').scrollIntoView({behavior: 'smooth', block: 'center'})")
+        page.wait_for_timeout(1000)
+        mark("place", "#place")
+        page.wait_for_timeout(700)
+        page.set_input_files("#photo", str(UPLOAD))
+        page.wait_for_timeout(1200)
+        page.click("#name")
+        page.type("#name", "A woman in a sari, 1880s", delay=55)
+        page.click("#memory")
+        page.type("#memory", "Her name was not recorded.", delay=45)
+        page.wait_for_timeout(800)
+
+        # 4. Working: the DigitalOcean server mends, colours and finds depth.
+        page.click("#submit")
+        page.wait_for_timeout(300)
+        mark("working", "#working")
+        page.wait_for_function("document.querySelector('#working').hidden === true", timeout=120000)
+
+        # 5. The Return of her photo.
+        page.wait_for_timeout(700)  # app scrolls the altar into view and starts the Return
+        mark("return", ".altar")
+        page.wait_for_timeout(6800)
+        b = box(page, "#portrait")
+        cx, cy = (b[0] + b[2] / 2) / SCALE, (b[1] + b[3] / 2) / SCALE
+        glide(page, cx - 90, cy - 70, cx + 90, cy + 50, 2.6)
+        glide(page, cx + 90, cy + 50, cx - 70, cy + 70, 2.4)
+
+        # 6. Honesty: where it came from, and how close the face is.
+        mark("credit", ".remembered")
+        page.wait_for_timeout(5000)
+
+        # 7. Light a candle.
+        mark("candle", ".altar")
+        page.wait_for_timeout(600)
+        page.evaluate("document.querySelector('#light').click()")
+        page.wait_for_timeout(4500)
+        mark("end")
+
         cdp.send("Page.stopScreencast")
         browser.close()
 
-    # Turn the timestamped frames into a constant 30 fps video.
-    t0 = frames[0][0]
+    duration = frames[-1][0] - t0 + 0.04
     lines = []
-    for (ts, path), nxt in zip(frames, frames[1:] + [(t0 + args.seconds, None)]):
+    for (ts, path), nxt in zip(frames, frames[1:] + [(t0 + duration, None)]):
         lines += [f"file '{path.as_posix()}'", f"duration {max(nxt[0] - ts, 0.001):.4f}"]
     lines.append(f"file '{frames[-1][1].as_posix()}'")
     (tmp / "list.txt").write_text("\n".join(lines))
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    silent = args.out.with_name(args.out.name + "-silent.mp4")
-    fade = f"fade=t=in:st=0:d=0.8,fade=t=out:st={args.seconds - 1.5:.2f}:d=1.5"
+    video = args.out.with_suffix(".mp4")
     subprocess.run([FFMPEG, "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(tmp / "list.txt"),
-                    "-vf", f"fps=30,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,{fade}",
-                    "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", str(silent)], check=True)
-    print(f"{len(frames)} frames -> {silent}")
-
-    if args.voice:
-        final = args.out.with_suffix(".mp4")
-        subprocess.run([FFMPEG, "-y", "-loglevel", "error", "-i", str(silent), "-i", str(args.voice),
-                        "-filter_complex", f"[1:a]adelay=400|400,afade=t=out:st={args.seconds - 1.5:.2f}:d=1.5,loudnorm=I=-16:TP=-1.5[a]",
-                        "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest",
-                        "-movflags", "+faststart", str(final)], check=True)
-        print("with voice-over ->", final)
-    shutil.rmtree(tmp)
+                    "-vf", "fps=30,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2",
+                    "-c:v", "libx264", "-preset", "medium", "-crf", "16", "-pix_fmt", "yuv420p", str(video)], check=True)
+    args.out.with_suffix(".json").write_text(json.dumps({"duration": duration, "events": events}, indent=2))
+    print(f"{len(frames)} frames, {duration:.1f}s -> {video}")
+    for e in events:
+        print(e)
 
 
 if __name__ == "__main__":
