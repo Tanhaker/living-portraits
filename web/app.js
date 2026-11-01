@@ -24,6 +24,8 @@ async function showOnAltar(item, { scroll = false } = {}) {
   $("r-name").textContent = item.name || "";
   $("r-memory").textContent = item.memory || "";
   $("download").href = item.download || item.final;
+  showCredit(item);
+  showCandles(item);
   if (viewer) await viewer.show(item);
   else $("fallback").src = item.final;
   if (scroll) $("altar").scrollIntoView({ behavior: "smooth", block: "center" });
@@ -34,9 +36,9 @@ $("replay").addEventListener("click", () => viewer && viewer.play());
 $("record").addEventListener("click", async () => {
   if (!viewer || !current) return;
   const btn = $("record");
-  const label = btn.innerHTML;
+  const label = btn.textContent;
   btn.disabled = true;
-  btn.innerHTML = '<i class="ph ph-record"></i>Recording';
+  btn.textContent = "Recording 9 seconds";
   try {
     const blob = await viewer.record(9);
     const a = document.createElement("a");
@@ -47,23 +49,68 @@ $("record").addEventListener("click", async () => {
     alert(e.message);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = label;
+    btn.textContent = label;
   }
+});
+
+// ---- Credit line and candles ------------------------------------------------
+
+function showCredit(item) {
+  const el = $("r-credit");
+  el.textContent = "";
+  if (item.source) {
+    const a = document.createElement("a");
+    a.href = item.source;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "Wikimedia Commons";
+    el.append(a, `, ${item.licence.toLowerCase()}. `);
+  }
+  if (item.identity != null) el.append(`Face match with the original: ${item.identity.toFixed(2)}. `);
+  if (item.colourised !== false) el.append("Colour is the model's guess.");
+}
+
+let candleCounts = {};
+const litHere = () => { try { return JSON.parse(localStorage.getItem("lp-lit") || "[]"); } catch { return []; } };
+
+function showCandles(item) {
+  const n = candleCounts[item.key] || 0;
+  const mine = litHere().includes(item.key);
+  $("light-count").textContent = n ? `${n} ${n === 1 ? "candle" : "candles"} lit` : "";
+  $("light").disabled = mine || !item.key;
+  $("light").textContent = mine ? "You lit a candle" : "Light a candle";
+  $("candles").querySelectorAll(".new").forEach((c) => c.remove());
+}
+
+$("light").addEventListener("click", async () => {
+  if (!current || !current.key) return;
+  const extra = document.createElement("span");
+  extra.className = "new";
+  $("candles").append(extra);
+  $("light").disabled = true;
+  $("light").textContent = "You lit a candle";
+  try {
+    const r = await fetch(`${API}/api/candles/${current.key}`, { method: "POST" }).then((res) => res.json());
+    candleCounts[current.key] = r.count;
+    try { localStorage.setItem("lp-lit", JSON.stringify([...litHere(), current.key])); } catch { /* private mode */ }
+  } catch { /* server asleep: the candle still shows here */ }
+  const n = candleCounts[current.key] || 1;
+  $("light-count").textContent = `${n} ${n === 1 ? "candle" : "candles"} lit`;
 });
 
 // ---- Gallery ----------------------------------------------------------------
 
 async function loadExamples() {
   try {
-    const items = await fetch("examples/examples.json?v=4").then((r) => r.json());
+    const items = await fetch("examples/examples.json?v=5").then((r) => r.json());
     return items.map((e) => ({ ...e, before: `examples/${e.before}`, final: `examples/${e.final}`, depth: `examples/${e.depth}` }));
   } catch { return []; }
 }
 
 function fromJob(job) {
   const f = (k) => `${API}/files/${job.id}/${job.files[k]}`;
-  return { name: job.name, memory: job.memory, before: f("before"), final: f("final"), depth: f("depth"),
-           download: f("download"), face: job.face };
+  return { key: job.id, name: job.name, memory: job.memory, before: f("before"), final: f("final"), depth: f("depth"),
+           download: f("download"), face: job.face, identity: job.identity, colourised: job.was_black_and_white };
 }
 
 function renderGallery(items) {
@@ -82,7 +129,7 @@ function renderGallery(items) {
     b.addEventListener("click", () => showOnAltar(item, { scroll: true }));
     $("gallery").append(b);
   }
-  $("gallery-section").hidden = false;
+  $("remembered").hidden = false;
 }
 
 // ---- Placing a photo ----------------------------------------------------------
@@ -172,56 +219,14 @@ async function follow(id) {
   }
 }
 
-// ---- Falling marigold petals behind everything ---------------------------------
-
-function petals() {
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const c = $("petals"), ctx = c.getContext("2d");
-  const colours = ["#e8a243", "#f0b25d", "#d9822b"];
-  let w, h, list;
-  const size = () => {
-    w = c.width = innerWidth;
-    h = c.height = innerHeight;
-    list = Array.from({ length: Math.round(w / 90) }, () => spawn(true));
-  };
-  const spawn = (anywhere) => ({
-    x: Math.random() * w, y: anywhere ? Math.random() * h : -20,
-    r: 3 + Math.random() * 4, vy: 0.25 + Math.random() * 0.45, sway: Math.random() * 6.28,
-    rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.02, col: colours[(Math.random() * 3) | 0],
-    a: 0.35 + Math.random() * 0.35,
-  });
-  size();
-  addEventListener("resize", size);
-  (function tick() {
-    ctx.clearRect(0, 0, w, h);
-    for (const p of list) {
-      p.y += p.vy;
-      p.sway += 0.01;
-      p.x += Math.sin(p.sway) * 0.3;
-      p.rot += p.vr;
-      if (p.y > h + 20) Object.assign(p, spawn(false));
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      ctx.globalAlpha = p.a;
-      ctx.fillStyle = p.col;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, p.r, p.r * 0.55, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-    requestAnimationFrame(tick);
-  })();
-}
-
 // ---- Start ---------------------------------------------------------------------
 
 (async function start() {
   initViewer();
-  petals();
   const examples = await loadExamples();
 
   let shared = [];
+  try { candleCounts = await fetch(`${API}/api/candles`).then((r) => r.json()); } catch { /* resting */ }
   try {
     const health = await fetch(`${API}/api/health`).then((r) => r.json());
     if (!health.ready) $("server-note").textContent = "The restoring server is starting up. Give it a minute.";

@@ -25,9 +25,13 @@ So I built them an altar.
 3. Colour blooms outward from their face.
 4. The portrait settles into depth. Move your cursor, or tilt your phone, and it shifts gently in 3D while candlelight flickers brighter on what is nearer to you.
 
-Every portrait carries what is known about them, which is often only this: *Her name was not recorded.*
+Every portrait carries what is known about them, which is often only this: *Her name was not recorded.* Under it is a link to the archive the photo came from, its licence, and how closely the restored face matches the original.
 
-You can place your own family's photos on it too, and save the Return as a video to send to the family group.
+### Light a candle
+
+If the final death comes when no one remembers you, the least we can do is remember. Under each portrait there is one button: **Light a candle**. A fourth candle catches on the altar shelf, and the count is saved, one per visitor. A woman photographed in 1910, whose name nobody wrote down, now has people who stopped for her.
+
+You can also place your own family's photos on the altar, and save the Return as a video to send to the family group.
 
 ### The line I would not cross
 
@@ -37,10 +41,10 @@ So I threw it away. In Living Portraits **the face is never moved, re-posed or g
 
 ## Demo
 
-- **Live:** http://139.59.7.49
-- **Video:** [[link to a 60-second screen recording]]
+- **Live:** http://139.59.7.49 (light a candle for someone)
+- **Video (60 seconds):** [[YouTube link: upload docs/media/demo.mp4 as Unlisted, then replace this line with {% youtube VIDEO_ID %}]]
 
-<!-- Add a screenshot of the altar page here. -->
+The narration in the video was generated with ElevenLabs. Everything inside the app is open source.
 
 ## Code
 

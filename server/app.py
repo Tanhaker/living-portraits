@@ -1,16 +1,17 @@
-"""Living Portraits API. One GPU, one queue: photos are processed in order."""
+"""Living Portraits API. One worker, one queue: photos are processed in order."""
 
 from __future__ import annotations
 
 import json
 import os
 import queue
+import re
 import threading
 import time
 import uuid
 from pathlib import Path
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -27,6 +28,12 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 jobs: dict[str, dict] = {}
 work: queue.Queue[str] = queue.Queue()
 pipeline = None
+
+# Candles lit for each portrait: one per visitor (IP) per portrait, kept across restarts.
+CANDLES = DATA / "candles.json"
+candles: dict[str, int] = json.loads(CANDLES.read_text()) if CANDLES.exists() else {}
+candle_lock = threading.Lock()
+lit: set[tuple[str, str]] = set()
 
 
 def _save(job: dict) -> None:
@@ -113,6 +120,24 @@ def get(job_id: str):
 def gallery():
     done = [j for j in jobs.values() if j["status"] == "done" and j.get("share")]
     return sorted(done, key=lambda j: -j["created_at"])[:24]
+
+
+@app.get("/api/candles")
+def candle_counts():
+    return candles
+
+
+@app.post("/api/candles/{key}")
+def light_candle(key: str, request: Request):
+    if not re.fullmatch(r"[a-z0-9-]{1,60}", key):
+        raise HTTPException(400, "Unknown portrait")
+    who = request.client.host if request.client else "unknown"
+    with candle_lock:
+        if (who, key) not in lit:
+            lit.add((who, key))
+            candles[key] = candles.get(key, 0) + 1
+            CANDLES.write_text(json.dumps(candles))
+    return {"key": key, "count": candles.get(key, 0)}
 
 
 @app.get("/files/{job_id}/{name}")

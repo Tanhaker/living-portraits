@@ -9,7 +9,10 @@
       "x": 0.4797,
       "y": 0.4474
     },
-    "identity": 0.881
+    "identity": 0.881,
+    "key": "unnamed-6",
+    "source": "https://commons.wikimedia.org/wiki/File%3AIndian_Christian%2C_India%2C_ca._1910_%28IMP-CSCNWW33-OS14-35%29.jpg",
+    "licence": "Public domain"
   },
   {
     "name": "A woman in a sari and ornaments, 1880s",
@@ -21,7 +24,10 @@
       "x": 0.4736,
       "y": 0.2382
     },
-    "identity": 0.949
+    "identity": 0.949,
+    "key": "unnamed-3",
+    "source": "https://commons.wikimedia.org/wiki/File%3AStudio_portrait_of_an_Indian_woman_in_sari_and_various_ornaments_in_the_1880s.jpg",
+    "licence": "Public domain"
   },
   {
     "name": "A milk-seller, India, c. 1900",
@@ -33,7 +39,10 @@
       "x": 0.5407,
       "y": 0.2291
     },
-    "identity": 0.933
+    "identity": 0.933,
+    "key": "unnamed-1",
+    "source": "https://commons.wikimedia.org/wiki/File%3AA_milk-woman_in_India_%28late_19th_or_early_20th_century%29.jpg",
+    "licence": "Public domain"
   },
   {
     "name": "A woman with jewellery and a jug, 1870s",
@@ -45,7 +54,10 @@
       "x": 0.4086,
       "y": 0.3516
     },
-    "identity": 0.939
+    "identity": 0.939,
+    "key": "unnamed-4",
+    "source": "https://commons.wikimedia.org/wiki/File%3AStudioportret_van_een_Indiase_vrouw_met_sieraden_en_een_kan%2C_RP-F-F80348.jpg",
+    "licence": "CC0"
   },
   {
     "name": "Two women, late 1800s",
@@ -57,7 +69,10 @@
       "x": 0.6576,
       "y": 0.1974
     },
-    "identity": 0.943
+    "identity": 0.943,
+    "key": "unnamed-5",
+    "source": "https://commons.wikimedia.org/wiki/File%3AStudioportret_van_twee_Indiase_vrouwen_in_traditionele_kleding_uit_een_berggebied_Aboriginal_Tribes_Zeilgherry_Hills_%28titel_op_object%29%2C_RP-F-F80378-A.jpg",
+    "licence": "CC0"
   },
   {
     "name": "Kasturba Gandhi",
@@ -69,7 +84,10 @@
       "x": 0.5386,
       "y": 0.3718
     },
-    "identity": 0.946
+    "identity": 0.946,
+    "key": "kasturba-gandhi",
+    "source": "https://commons.wikimedia.org/wiki/File:Kasturba_Gandhi.jpg",
+    "licence": "Public domain"
   },
   {
     "name": "Srinivasa Ramanujan, 1913",
@@ -81,7 +99,10 @@
       "x": 0.5742,
       "y": 0.2449
     },
-    "identity": 0.939
+    "identity": 0.939,
+    "key": "srinivasa-ramanujan-opc-1",
+    "source": "https://commons.wikimedia.org/wiki/File:Srinivasa_Ramanujan_-_OPC_-_1.jpg",
+    "licence": "Public domain"
   },
   {
     "name": "Rabindranath Tagore, 1909",
@@ -93,7 +114,10 @@
       "x": 0.3941,
       "y": 0.359
     },
-    "identity": 0.738
+    "identity": 0.738,
+    "key": "rabindranath-tagore-in-1909",
+    "source": "https://commons.wikimedia.org/wiki/File:Rabindranath_Tagore_in_1909.jpg",
+    "licence": "Public domain"
   },
   {
     "name": "Marie Curie, c. 1920",
@@ -105,7 +129,10 @@
       "x": 0.4881,
       "y": 0.4289
     },
-    "identity": 0.958
+    "identity": 0.958,
+    "key": "marie-curie-c1920",
+    "source": "https://commons.wikimedia.org/wiki/File:Marie_Curie_c1920.jpg",
+    "licence": "Public domain"
   },
   {
     "name": "Frederick Douglass, c. 1879",
@@ -117,6 +144,9 @@
       "x": 0.4718,
       "y": 0.3944
     },
-    "identity": 0.957
+    "identity": 0.957,
+    "key": "frederick-douglass-circa-1879",
+    "source": "https://commons.wikimedia.org/wiki/File:Frederick_Douglass_%28circa_1879%29.jpg",
+    "licence": "Public domain"
   }
 ]
