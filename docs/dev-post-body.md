@@ -43,6 +43,8 @@ If the final death comes when no one remembers you, the smallest thing we can do
 
 Under each portrait there is one button: **Light a candle.** A fourth candle catches on the altar's shelf, and the server keeps count, one candle per visitor. It isn't much. But a woman whose name nobody wrote down, a hundred years ago, now has a number next to her that only goes up.
 
+![Lighting a candle on the altar](https://raw.githubusercontent.com/Tanhaker/living-portraits/main/docs/media/light-a-candle.gif)
+
 You can also place your own family's photos on the altar, and save their Return as a short video to send to the family group.
 
 ## The Version I Threw Away
@@ -59,7 +61,13 @@ That decision changed the whole project, and I think it made it better.
 
 **Try it live:** http://139.59.7.49 (light a candle for someone while you're there)
 
+![The altar page](https://raw.githubusercontent.com/Tanhaker/living-portraits/main/docs/media/altar-screenshot.jpg)
+
 **Watch the 68-second demo:** [demo video](https://github.com/Tanhaker/living-portraits/blob/main/docs/media/demo.mp4). A photo is placed on the altar, processed live on DigitalOcean, returns, and gets its first candle. The narration was generated with ElevenLabs.
+
+Here is a photo being placed on the altar and processed live on the DigitalOcean server:
+
+![Placing a photo on the altar](https://raw.githubusercontent.com/Tanhaker/living-portraits/main/docs/media/place-a-photo.gif)
 
 ## How It Works
 
@@ -105,11 +113,21 @@ Real colour photos leave a lot behind. Sepia and grey prints leave almost nothin
 
 DDColor's first results were vivid in a way old photographs never are: magenta suits, orange hands. I scale the predicted colour back by a quarter. The portraits look less like an advert and more like a hand-tinted print, which is closer to the truth of the era.
 
-## Running It on DigitalOcean, Without a GPU
+## Built on DigitalOcean
 
-Living Portraits runs on a single **DigitalOcean CPU-Optimized Droplet** (4 vCPU, 8 GB RAM) in Bangalore, as a systemd service. The repo has the setup script and the service file, so anyone can stand up their own copy.
+The whole altar lives on one **DigitalOcean CPU-Optimized Droplet**, and DigitalOcean is a big part of why one person could build and ship this in a weekend.
 
-I planned to use a GPU Droplet. Then I removed the face animation, the heaviest model, and found the rest fit comfortably on CPU. A photo takes about 12 seconds on the Droplet, against about 5 seconds on my laptop's 4 GB RTX 3050. At $0.125 an hour, that's roughly $0.0004 of compute per photo.
+**It sits close to the people it's for.** The portraits are from India, and so are many of the families I hope will use it, so the Droplet runs in DigitalOcean's Bangalore region.
+
+**Dedicated cores, steady timing.** Restoring a photo is heavy, continuous number-crunching. On a CPU-Optimized Droplet with 4 dedicated vCPUs, a photo takes about 12 seconds, every time, with no noisy neighbours slowing it down.
+
+**One machine runs everything.** The four models, the FastAPI server, the candle counts and the web page itself all live on the same Droplet as a single systemd service. There is no separate GPU service, no third-party AI API, and nothing else to keep in sync.
+
+**From a blank Droplet to live with one script.** `setup.sh` in the repo installs the models on a fresh Ubuntu Droplet, and the service file keeps the app running across restarts. Every update during the build was a copy and a service restart.
+
+**It doesn't need a GPU.** I planned to rent a GPU Droplet. Then I removed the face animation, the heaviest model, and found everything else fits comfortably on CPU: about 12 seconds per photo on the Droplet, against about 5 seconds on my laptop's 4 GB RTX 3050.
+
+**The cost is small and predictable.** The Droplet costs $0.125 an hour, which works out to roughly $0.0004 of compute per photo, and the whole build ran on DigitalOcean's Hacktoberfest credit.
 
 That matters for who can use this. A family, a small local archive or a school history project can run their own altar for a few dollars a day, or switch it off when no one is visiting.
 
